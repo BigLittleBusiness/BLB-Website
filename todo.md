@@ -1,0 +1,21 @@
+# Project TODO
+
+- [x] Basic homepage layout
+- [x] Navigation menu
+- [x] Hero section with dark background
+- [x] Products section with three SaaS platforms
+- [x] Features/Benefits section
+- [x] About section
+- [x] Contact section with demo form
+- [x] Footer
+- [x] Remove client references and testimonials
+- [x] Add specific product value propositions
+- [x] Replace Testimonials with Why Choose Us section
+- [x] Update About section with mission focus
+- [x] Upgrade to full-stack with database
+- [x] Create demo submissions database table
+- [x] Implement simple math captcha component
+- [x] Create form submission API endpoint
+- [x] Implement owner notification for new submissions
+- [x] Update ContactSection with captcha and form handling
+- [x] Write tests for form submission
