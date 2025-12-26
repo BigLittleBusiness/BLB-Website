@@ -6,6 +6,9 @@ import type { TrpcContext } from "./_core/context";
 vi.mock("./db", () => ({
   createDemoSubmission: vi.fn(),
   getDemoSubmissions: vi.fn(),
+  getDemoSubmissionById: vi.fn(),
+  updateDemoSubmissionStatus: vi.fn(),
+  deleteDemoSubmission: vi.fn(),
 }));
 
 // Mock the notification function
@@ -13,12 +16,41 @@ vi.mock("./_core/notification", () => ({
   notifyOwner: vi.fn(),
 }));
 
-import { createDemoSubmission, getDemoSubmissions } from "./db";
+import { 
+  createDemoSubmission, 
+  getDemoSubmissions, 
+  getDemoSubmissionById,
+  updateDemoSubmissionStatus,
+  deleteDemoSubmission 
+} from "./db";
 import { notifyOwner } from "./_core/notification";
 
 function createPublicContext(): TrpcContext {
   return {
     user: null,
+    req: {
+      protocol: "https",
+      headers: {},
+    } as TrpcContext["req"],
+    res: {
+      clearCookie: vi.fn(),
+    } as unknown as TrpcContext["res"],
+  };
+}
+
+function createAuthenticatedContext(): TrpcContext {
+  return {
+    user: {
+      id: 1,
+      openId: "test-open-id",
+      name: "Test Admin",
+      email: "admin@test.com",
+      role: "admin" as const,
+      loginMethod: "oauth",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    },
     req: {
       protocol: "https",
       headers: {},
@@ -63,6 +95,7 @@ describe("demo.submit", () => {
 
     expect(result.success).toBe(true);
     expect(result.message).toContain("Thank you");
+    expect(result.product).toBe("GrantMaestro");
     expect(createDemoSubmission).toHaveBeenCalledWith({
       name: "John Smith",
       email: "john@council.gov.au",
@@ -98,6 +131,7 @@ describe("demo.submit", () => {
     });
 
     expect(result.success).toBe(true);
+    expect(result.product).toBeNull();
     expect(createDemoSubmission).toHaveBeenCalledWith({
       name: "Jane Doe",
       email: "jane@example.com",
@@ -160,12 +194,12 @@ describe("demo.submit", () => {
   });
 });
 
-describe("demo.list", () => {
+describe("demo.list (protected)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("returns list of demo submissions", async () => {
+  it("returns list of demo submissions for authenticated user", async () => {
     const mockSubmissions = [
       {
         id: 1,
@@ -193,7 +227,7 @@ describe("demo.list", () => {
 
     vi.mocked(getDemoSubmissions).mockResolvedValue(mockSubmissions);
 
-    const ctx = createPublicContext();
+    const ctx = createAuthenticatedContext();
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.demo.list();
@@ -206,11 +240,113 @@ describe("demo.list", () => {
   it("returns empty array when no submissions exist", async () => {
     vi.mocked(getDemoSubmissions).mockResolvedValue([]);
 
-    const ctx = createPublicContext();
+    const ctx = createAuthenticatedContext();
     const caller = appRouter.createCaller(ctx);
 
     const result = await caller.demo.list();
 
     expect(result).toHaveLength(0);
+  });
+
+  it("rejects unauthenticated users", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    await expect(caller.demo.list()).rejects.toThrow();
+  });
+});
+
+describe("demo.updateStatus (protected)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("successfully updates submission status", async () => {
+    const mockUpdatedSubmission = {
+      id: 1,
+      name: "John Smith",
+      email: "john@council.gov.au",
+      organisation: "Melbourne City Council",
+      product: "GrantMaestro" as const,
+      message: null,
+      status: "contacted" as const,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    vi.mocked(updateDemoSubmissionStatus).mockResolvedValue(mockUpdatedSubmission);
+
+    const ctx = createAuthenticatedContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.demo.updateStatus({
+      id: 1,
+      status: "contacted",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.submission?.status).toBe("contacted");
+    expect(updateDemoSubmissionStatus).toHaveBeenCalledWith(1, "contacted");
+  });
+
+  it("returns error when update fails", async () => {
+    vi.mocked(updateDemoSubmissionStatus).mockResolvedValue(null);
+
+    const ctx = createAuthenticatedContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.demo.updateStatus({
+      id: 999,
+      status: "contacted",
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Failed to update");
+  });
+
+  it("rejects unauthenticated users", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    await expect(
+      caller.demo.updateStatus({ id: 1, status: "contacted" })
+    ).rejects.toThrow();
+  });
+});
+
+describe("demo.delete (protected)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("successfully deletes a submission", async () => {
+    vi.mocked(deleteDemoSubmission).mockResolvedValue(true);
+
+    const ctx = createAuthenticatedContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.demo.delete({ id: 1 });
+
+    expect(result.success).toBe(true);
+    expect(deleteDemoSubmission).toHaveBeenCalledWith(1);
+  });
+
+  it("returns error when delete fails", async () => {
+    vi.mocked(deleteDemoSubmission).mockResolvedValue(false);
+
+    const ctx = createAuthenticatedContext();
+    const caller = appRouter.createCaller(ctx);
+
+    const result = await caller.demo.delete({ id: 999 });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Failed to delete");
+  });
+
+  it("rejects unauthenticated users", async () => {
+    const ctx = createPublicContext();
+    const caller = appRouter.createCaller(ctx);
+
+    await expect(caller.demo.delete({ id: 1 })).rejects.toThrow();
   });
 });

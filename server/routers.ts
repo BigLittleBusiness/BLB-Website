@@ -1,9 +1,16 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
+import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { createDemoSubmission, getDemoSubmissions } from "./db";
+import { 
+  createDemoSubmission, 
+  getDemoSubmissions, 
+  getDemoSubmissionById,
+  updateDemoSubmissionStatus,
+  deleteDemoSubmission,
+  type DemoSubmissionStatus 
+} from "./db";
 import { notifyOwner } from "./_core/notification";
 
 // Input validation schema for demo submissions
@@ -13,6 +20,12 @@ const demoSubmissionSchema = z.object({
   organisation: z.string().max(255).optional(),
   product: z.enum(["GrantMaestro", "Wellness App", "GrantThrive", "Multiple Products"]).optional(),
   message: z.string().max(2000).optional(),
+});
+
+// Status update schema
+const statusUpdateSchema = z.object({
+  id: z.number().int().positive(),
+  status: z.enum(["new", "contacted", "converted", "closed"]),
 });
 
 export const appRouter = router({
@@ -77,6 +90,7 @@ ${messageText}
           return {
             success: true,
             message: "Thank you for your interest! We'll be in touch within 24 hours.",
+            product: input.product || null,
           };
         } catch (error) {
           console.error("[Demo Submission] Error:", error);
@@ -87,10 +101,67 @@ ${messageText}
         }
       }),
 
-    // Admin endpoint to view submissions (protected in real app)
-    list: publicProcedure.query(async () => {
+    // Admin endpoint to view submissions (protected - requires login)
+    list: protectedProcedure.query(async () => {
       return getDemoSubmissions();
     }),
+
+    // Get single submission by ID
+    getById: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        return getDemoSubmissionById(input.id);
+      }),
+
+    // Update submission status
+    updateStatus: protectedProcedure
+      .input(statusUpdateSchema)
+      .mutation(async ({ input }) => {
+        try {
+          const updated = await updateDemoSubmissionStatus(
+            input.id, 
+            input.status as DemoSubmissionStatus
+          );
+          
+          if (!updated) {
+            return {
+              success: false,
+              error: "Failed to update submission status.",
+            };
+          }
+
+          return {
+            success: true,
+            submission: updated,
+          };
+        } catch (error) {
+          console.error("[Demo Status Update] Error:", error);
+          return {
+            success: false,
+            error: "An unexpected error occurred.",
+          };
+        }
+      }),
+
+    // Delete submission
+    delete: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        try {
+          const deleted = await deleteDemoSubmission(input.id);
+          
+          return {
+            success: deleted,
+            error: deleted ? undefined : "Failed to delete submission.",
+          };
+        } catch (error) {
+          console.error("[Demo Delete] Error:", error);
+          return {
+            success: false,
+            error: "An unexpected error occurred.",
+          };
+        }
+      }),
   }),
 });
 

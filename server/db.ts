@@ -136,3 +136,44 @@ export async function getDemoSubmissionById(id: number): Promise<DemoSubmission 
   const result = await db.select().from(demoSubmissions).where(eq(demoSubmissions.id, id)).limit(1);
   return result.length > 0 ? result[0] : null;
 }
+
+export type DemoSubmissionStatus = "new" | "contacted" | "converted" | "closed";
+
+export async function updateDemoSubmissionStatus(
+  id: number, 
+  status: DemoSubmissionStatus
+): Promise<DemoSubmission | null> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot update demo submission: database not available");
+    return null;
+  }
+
+  try {
+    await db
+      .update(demoSubmissions)
+      .set({ status })
+      .where(eq(demoSubmissions.id, id));
+    
+    return getDemoSubmissionById(id);
+  } catch (error) {
+    console.error("[Database] Failed to update demo submission status:", error);
+    throw error;
+  }
+}
+
+export async function deleteDemoSubmission(id: number): Promise<boolean> {
+  const db = await getDb();
+  if (!db) {
+    console.warn("[Database] Cannot delete demo submission: database not available");
+    return false;
+  }
+
+  try {
+    await db.delete(demoSubmissions).where(eq(demoSubmissions.id, id));
+    return true;
+  } catch (error) {
+    console.error("[Database] Failed to delete demo submission:", error);
+    throw error;
+  }
+}

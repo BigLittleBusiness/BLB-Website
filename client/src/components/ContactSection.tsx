@@ -3,17 +3,85 @@
  * Contact: Light section with prominent CTA
  * Gold gradient button for conversion focus
  * Includes math captcha for spam protection
+ * Enhanced success page with product exploration options
  */
 
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, ArrowRight, Loader2, CheckCircle } from "lucide-react";
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  ArrowRight, 
+  Loader2, 
+  CheckCircle, 
+  ExternalLink,
+  BookOpen,
+  Sparkles,
+  Users,
+  TrendingUp
+} from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import MathCaptcha from "./MathCaptcha";
 import { toast } from "sonner";
 
 type ProductType = "GrantMaestro" | "Wellness App" | "GrantThrive" | "Multiple Products";
+
+// Product information for success page
+const productInfo: Record<ProductType | "Multiple Products", { 
+  name: string; 
+  url: string; 
+  description: string;
+  features: string[];
+}> = {
+  "GrantMaestro": {
+    name: "GrantMaestro",
+    url: "https://www.grantmaestro.com",
+    description: "Master your grants with our comprehensive management platform",
+    features: ["Centralised grant tracking", "Team collaboration", "Automated reminders", "Document storage"],
+  },
+  "Wellness App": {
+    name: "Wellness App",
+    url: "https://www.wellnessapp.com.au",
+    description: "Your early warning system for staff wellbeing",
+    features: ["Staff engagement tracking", "Early alert system", "Trend identification", "Wellbeing insights"],
+  },
+  "GrantThrive": {
+    name: "GrantThrive",
+    url: "https://www.grantthrive.com",
+    description: "Achieve greater community impact with streamlined grant processes",
+    features: ["Reduced admin burden", "Digital transformation", "Community engagement", "Transparent processes"],
+  },
+  "Multiple Products": {
+    name: "Our Platform Suite",
+    url: "#products",
+    description: "Explore our complete range of solutions",
+    features: ["Grant management", "Staff wellbeing", "Community impact", "Integrated solutions"],
+  },
+};
+
+// Case studies data
+const caseStudies = [
+  {
+    title: "Streamlining Grant Management",
+    organisation: "Regional Council",
+    outcome: "60% reduction in administrative time",
+    icon: <TrendingUp className="w-5 h-5" />,
+  },
+  {
+    title: "Improving Staff Wellbeing",
+    organisation: "Local Government",
+    outcome: "Early intervention for 15+ staff members",
+    icon: <Users className="w-5 h-5" />,
+  },
+  {
+    title: "Community Grant Success",
+    organisation: "Not-For-Profit",
+    outcome: "200% increase in grant applications",
+    icon: <Sparkles className="w-5 h-5" />,
+  },
+];
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -25,13 +93,15 @@ export default function ContactSection() {
   });
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
 
   const submitMutation = trpc.demo.submit.useMutation({
     onSuccess: (data) => {
       if (data.success) {
         setIsSubmitted(true);
+        setSelectedProduct(data.product as ProductType || null);
         toast.success(data.message || "Demo request submitted successfully!");
-        // Reset form
+        // Reset form data but keep submission state
         setFormData({
           name: "",
           email: "",
@@ -89,6 +159,14 @@ export default function ContactSection() {
       message: formData.message.trim() || undefined,
     });
   };
+
+  const handleResetForm = () => {
+    setIsSubmitted(false);
+    setSelectedProduct(null);
+  };
+
+  // Get product info for the selected product or default
+  const currentProductInfo = selectedProduct ? productInfo[selectedProduct] : productInfo["Multiple Products"];
 
   return (
     <section id="contact" className="py-24 lg:py-32 bg-white">
@@ -172,25 +250,96 @@ export default function ContactSection() {
           >
             <div className="bg-dark rounded-2xl p-8 lg:p-12">
               {isSubmitted ? (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-8 h-8 text-green-500" />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Success Header */}
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="w-8 h-8 text-green-500" />
+                    </div>
+                    <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-3">
+                      Thank You!
+                    </h3>
+                    <p className="text-white/70 leading-relaxed">
+                      Your demo request has been received. We'll be in touch within 24 hours.
+                    </p>
                   </div>
-                  <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4">
-                    Thank You!
-                  </h3>
-                  <p className="text-white/70 mb-8 leading-relaxed">
-                    Your demo request has been received. We'll be in touch within 24 hours 
-                    to schedule your personalised demonstration.
-                  </p>
+
+                  {/* Product Exploration Section */}
+                  <div className="bg-white/5 rounded-xl p-6 mb-6 border border-white/10">
+                    <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-gold" />
+                      While You Wait
+                    </h4>
+                    <p className="text-white/60 text-sm mb-4">
+                      {currentProductInfo.description}
+                    </p>
+                    
+                    {/* Feature List */}
+                    <ul className="space-y-2 mb-4">
+                      {currentProductInfo.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2 text-white/70 text-sm">
+                          <CheckCircle className="w-3.5 h-3.5 text-gold flex-shrink-0" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Visit Product Button */}
+                    <Button
+                      asChild
+                      className="w-full gold-gradient text-[#0D0D0D] font-semibold hover:gold-glow transition-all group"
+                    >
+                      <a 
+                        href={currentProductInfo.url} 
+                        target={currentProductInfo.url.startsWith("http") ? "_blank" : undefined}
+                        rel={currentProductInfo.url.startsWith("http") ? "noopener noreferrer" : undefined}
+                      >
+                        Explore {currentProductInfo.name}
+                        <ExternalLink className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </a>
+                    </Button>
+                  </div>
+
+                  {/* Case Studies Section */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-white mb-4 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-gold" />
+                      Success Stories
+                    </h4>
+                    <div className="space-y-3">
+                      {caseStudies.map((study, index) => (
+                        <div 
+                          key={index}
+                          className="bg-white/5 rounded-lg p-4 border border-white/10 hover:border-gold/30 transition-colors"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 text-gold">
+                              {study.icon}
+                            </div>
+                            <div>
+                              <p className="font-medium text-white text-sm">{study.title}</p>
+                              <p className="text-white/50 text-xs">{study.organisation}</p>
+                              <p className="text-gold text-sm mt-1">{study.outcome}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Submit Another Request */}
                   <Button
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={handleResetForm}
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10"
+                    className="w-full border-white/20 text-white hover:bg-white/10"
                   >
                     Submit Another Request
                   </Button>
-                </div>
+                </motion.div>
               ) : (
                 <>
                   <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4">
@@ -244,12 +393,12 @@ export default function ContactSection() {
                         style={{ color: formData.product ? 'white' : 'rgba(255,255,255,0.5)' }}
                       >
                         <option value="" className="text-gray-900">
-                          Interested in...
+                          Which product interests you? *
                         </option>
-                        <option value="GrantMaestro" className="text-gray-900">GrantMaestro</option>
-                        <option value="Wellness App" className="text-gray-900">Wellness App</option>
-                        <option value="GrantThrive" className="text-gray-900">GrantThrive</option>
-                        <option value="Multiple Products" className="text-gray-900">Multiple Products</option>
+                        <option value="GrantMaestro" className="text-gray-900">GrantMaestro - Grant Management</option>
+                        <option value="Wellness App" className="text-gray-900">Wellness App - Staff Wellbeing</option>
+                        <option value="GrantThrive" className="text-gray-900">GrantThrive - Community Impact</option>
+                        <option value="Multiple Products" className="text-gray-900">Multiple Products - Full Suite</option>
                       </select>
                     </div>
                     <div>
