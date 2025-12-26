@@ -5,7 +5,7 @@
  */
 
 import { motion } from "framer-motion";
-import { Shield, Zap, Users, Award } from "lucide-react";
+import { Shield, Zap, Users, Target } from "lucide-react";
 
 const values = [
   {
@@ -27,10 +27,10 @@ const values = [
       "Whether it's grant applicants or employees, we put people at the heart of every solution we build.",
   },
   {
-    icon: Award,
-    title: "Proven Results",
+    icon: Target,
+    title: "Focused on Impact",
     description:
-      "Trusted by councils and organisations across Australia and New Zealand to deliver measurable outcomes.",
+      "Every feature we build is designed to save time, reduce costs, and help you achieve meaningful outcomes.",
   },
 ];
 
@@ -60,28 +60,29 @@ export default function AboutSection() {
             <p className="text-lg text-white/70 mb-8 leading-relaxed">
               Big Little Business was founded with a simple belief: that the right 
               technology can transform how organisations serve their communities. 
-              We partner with local governments and HR teams across Australia and 
-              New Zealand to deliver software that makes a real impact.
+              We're on a mission to eliminate administrative burden and help teams 
+              focus on what truly matters—making an impact.
             </p>
             <p className="text-lg text-white/70 leading-relaxed">
-              Our three platforms—GrantMaestro, Wellness App, and GrantThrive—represent 
-              years of collaboration with the people who use them. We listen, we learn, 
-              and we build solutions that work.
+              Our three platforms—GrantMaestro, Wellness App, and GrantThrive—are 
+              purpose-built for <strong className="text-white">Philanthropic organisations</strong>, <strong className="text-white">Not-For-Profits</strong>, 
+              and <strong className="text-white">Councils across Australia and New Zealand</strong>. We understand 
+              the unique challenges you face, and we've built solutions to solve them.
             </p>
 
-            {/* Stats */}
+            {/* Mission Stats */}
             <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-white/10">
               <div>
-                <p className="text-3xl font-display font-bold text-gold">150+</p>
-                <p className="text-sm text-white/50 mt-1">Councils Served</p>
-              </div>
-              <div>
-                <p className="text-3xl font-display font-bold text-white">10+</p>
-                <p className="text-sm text-white/50 mt-1">Years Experience</p>
-              </div>
-              <div>
-                <p className="text-3xl font-display font-bold text-white">3</p>
+                <p className="text-3xl font-display font-bold text-gold">3</p>
                 <p className="text-sm text-white/50 mt-1">SaaS Platforms</p>
+              </div>
+              <div>
+                <p className="text-3xl font-display font-bold text-white">AU & NZ</p>
+                <p className="text-sm text-white/50 mt-1">Market Focus</p>
+              </div>
+              <div>
+                <p className="text-3xl font-display font-bold text-white">100%</p>
+                <p className="text-sm text-white/50 mt-1">Australian Made</p>
               </div>
             </div>
           </motion.div>
@@ -103,13 +104,13 @@ export default function AboutSection() {
               {/* Overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/60 to-transparent" />
             </div>
-            {/* Floating card */}
+            {/* Floating card - Mission focused */}
             <div className="absolute -bottom-6 -left-6 p-6 rounded-xl bg-white shadow-2xl max-w-xs">
               <p className="font-display font-bold text-[#0D0D0D] mb-2">
-                "Big Little Business transformed how we manage grants."
+                Our Mission
               </p>
               <p className="text-sm text-[#666666]">
-                — Council Manager, Victoria
+                To help organisations save time, reduce costs, and focus on serving their communities.
               </p>
             </div>
           </motion.div>

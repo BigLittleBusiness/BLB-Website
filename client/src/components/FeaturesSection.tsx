@@ -10,7 +10,7 @@ import {
   Shield, 
   BarChart3, 
   Users, 
-  CheckCircle2, 
+  Sparkles, 
   Headphones 
 } from "lucide-react";
 
@@ -19,7 +19,7 @@ const features = [
     icon: Clock,
     title: "Save Time",
     description:
-      "Automate manual processes and reduce administrative burden by up to 60%. Your team can focus on what matters most.",
+      "Automate manual processes and reduce administrative burden significantly. Your team can focus on what matters most.",
   },
   {
     icon: Shield,
@@ -40,10 +40,10 @@ const features = [
       "Whether it's employees or grant applicants, our platforms create better experiences for everyone.",
   },
   {
-    icon: CheckCircle2,
-    title: "Proven ROI",
+    icon: Sparkles,
+    title: "Modern & Intuitive",
     description:
-      "Our clients see measurable returns within months of implementation. We're invested in your success.",
+      "Clean, user-friendly interfaces that your team will actually want to use. No complex training required.",
   },
   {
     icon: Headphones,
@@ -66,7 +66,7 @@ export default function FeaturesSection() {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-gold/10 text-gold font-medium text-sm mb-6">
-            Why Choose Us
+            Key Benefits
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-[#0D0D0D] mb-6">
             Built for the way{" "}
@@ -74,8 +74,8 @@ export default function FeaturesSection() {
           </h2>
           <p className="text-lg text-[#666666] leading-relaxed">
             Our platforms are designed specifically for local government and HR 
-            professionals. We understand your challenges because we've worked 
-            alongside you to solve them.
+            professionals. We understand your challenges and have built 
+            solutions to address them.
           </p>
         </motion.div>
 
@@ -118,7 +118,7 @@ export default function FeaturesSection() {
             href="#contact"
             className="inline-flex items-center gap-2 text-gold font-semibold hover:underline"
           >
-            Book a demo today
+            Get in touch today
             <span className="text-lg">→</span>
           </a>
         </motion.div>

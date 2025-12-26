@@ -5,7 +5,7 @@
  */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, FileCheck, Heart, Users } from "lucide-react";
+import { ArrowUpRight, FileCheck, Heart, Users, Clock, DollarSign, Target, Bell, FolderSearch, Users2, Sparkles, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const products = [
@@ -13,8 +13,14 @@ const products = [
     name: "GrantMaestro",
     tagline: "Master your grants",
     description:
-      "Comprehensive grant management software built for local government. Streamline applications, track compliance, and maximise funding outcomes.",
-    features: ["Application Management", "Compliance Tracking", "Reporting & Analytics", "Audit Ready"],
+      "Too many grants, no system? Manage every application in one place and let your team contribute with ease. Never miss a deadline or lose funds again.",
+    benefits: [
+      { icon: Clock, text: "Save hours on grant administration" },
+      { icon: Users2, text: "Keep your team in sync with real-time collaboration" },
+      { icon: Target, text: "Focus efforts where they matter most with clear insights" },
+      { icon: Bell, text: "Automate reminders for deadlines, reports, and renewals" },
+      { icon: FolderSearch, text: "Find any grant file or email in seconds" },
+    ],
     url: "https://www.grantmaestro.com",
     image: "/images/grant-maestro-dashboard.png",
     icon: FileCheck,
@@ -23,10 +29,16 @@ const products = [
   },
   {
     name: "Wellness App",
-    tagline: "Empower your people",
+    tagline: "Your early warning system for staff wellbeing",
     description:
-      "Employee wellness platform that drives engagement and improves wellbeing. Build a healthier, happier, more productive workforce.",
-    features: ["Health Challenges", "Mental Wellness", "Engagement Analytics", "Team Leaderboards"],
+      "A smoke detector for your staff's state of being. While the app cannot determine the reason for a staff member's wellbeing concerns, it alerts you to issues that may need further attention and care.",
+    benefits: [
+      { icon: Heart, text: "Engage staff on issues impacting their lives" },
+      { icon: Bell, text: "Receive early alerts when staff may need support" },
+      { icon: Target, text: "Identify trends before they become problems" },
+      { icon: Users2, text: "Build a culture of care and openness" },
+      { icon: Sparkles, text: "Empower proactive wellbeing management" },
+    ],
     url: "https://www.wellnessapp.com.au",
     image: "/images/wellness-app-dashboard.png",
     icon: Heart,
@@ -37,8 +49,14 @@ const products = [
     name: "GrantThrive",
     tagline: "Communities that flourish",
     description:
-      "Community development grant platform designed for economic developers. Track impact, visualise outcomes, and grow thriving communities.",
-    features: ["Impact Metrics", "Grant Distribution Maps", "Pipeline Management", "Community Reporting"],
+      "Achieve greater community impact while reducing operational costs. A modern, intuitive platform that eliminates hours of frustrating administrative work.",
+    benefits: [
+      { icon: DollarSign, text: "Reduce annual operational expenditure" },
+      { icon: Clock, text: "Eliminate hours of administrative burden" },
+      { icon: Target, text: "Enhance digital transformation goals" },
+      { icon: Users2, text: "Empower staff to focus on community engagement" },
+      { icon: HandHeart, text: "Simple, transparent process for applicants" },
+    ],
     url: "https://www.grantthrive.com",
     image: "/images/grant-thrive-dashboard.png",
     icon: Users,
@@ -79,16 +97,16 @@ export default function ProductsSection() {
           className="text-center max-w-3xl mx-auto mb-20"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-gold/10 text-gold font-medium text-sm mb-6">
-            Our Products
+            Our Platforms
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-[#0D0D0D] mb-6">
-            Three platforms.{" "}
-            <span className="text-gold">One mission.</span>
+            Save time. Save money.{" "}
+            <span className="text-gold">Make an impact.</span>
           </h2>
           <p className="text-lg text-[#666666] leading-relaxed">
-            Purpose-built SaaS solutions that help government and HR professionals 
-            achieve more with less. Each platform is designed to solve real problems 
-            for real organisations.
+            Purpose-built SaaS solutions designed to eliminate administrative burden 
+            and help you focus on what matters most—your community, your people, 
+            and your mission.
           </p>
         </motion.div>
 
@@ -126,11 +144,13 @@ export default function ProductsSection() {
                   {product.description}
                 </p>
 
-                <ul className="grid grid-cols-2 gap-3 mb-8">
-                  {product.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-[#333333]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-gold" />
-                      {feature}
+                <ul className="space-y-3 mb-8">
+                  {product.benefits.map((benefit) => (
+                    <li key={benefit.text} className="flex items-center gap-3 text-[#333333]">
+                      <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
+                        <benefit.icon className="w-4 h-4 text-gold" />
+                      </div>
+                      {benefit.text}
                     </li>
                   ))}
                 </ul>

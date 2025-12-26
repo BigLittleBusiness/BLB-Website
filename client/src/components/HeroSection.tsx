@@ -37,7 +37,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 mb-8"
             >
               <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
-              <span className="text-sm text-white/80">Trusted by 150+ councils across AU & NZ</span>
+              <span className="text-sm text-white/80">Purpose-built for AU & NZ organisations</span>
             </motion.div>
 
             {/* Headline */}
@@ -50,7 +50,7 @@ export default function HeroSection() {
             {/* Subheadline */}
             <p className="text-xl text-white/70 mb-10 leading-relaxed max-w-xl">
               Three powerful SaaS platforms designed for local government and HR professionals. 
-              Streamline grants, boost wellness, and drive community development.
+              Save time, reduce costs, and focus on what matters most.
             </p>
 
             {/* CTAs */}
@@ -85,7 +85,7 @@ export default function HeroSection() {
               transition={{ delay: 0.8, duration: 0.6 }}
               className="mt-16 pt-8 border-t border-white/10"
             >
-              <p className="text-sm text-white/50 mb-4">Serving organisations across</p>
+              <p className="text-sm text-white/50 mb-4">Built for organisations across</p>
               <div className="flex items-center gap-8">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl font-display font-bold text-white">AU</span>
@@ -100,7 +100,7 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right Content - Stats Cards */}
+          {/* Right Content - Value Proposition Cards */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -108,16 +108,18 @@ export default function HeroSection() {
             className="hidden lg:grid grid-cols-2 gap-4"
           >
             <div className="col-span-2 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <p className="text-white/60 text-sm mb-2">Total Grants Managed</p>
-              <p className="text-4xl font-display font-bold text-white">$2.4B+</p>
+              <p className="text-white/60 text-sm mb-2">Our Promise</p>
+              <p className="text-2xl font-display font-bold text-white">Save time. Reduce costs. Make an impact.</p>
             </div>
             <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <p className="text-white/60 text-sm mb-2">Active Users</p>
-              <p className="text-3xl font-display font-bold text-gold">45,000+</p>
+              <p className="text-white/60 text-sm mb-2">Platforms</p>
+              <p className="text-3xl font-display font-bold text-gold">3</p>
+              <p className="text-white/50 text-sm mt-1">Purpose-built solutions</p>
             </div>
             <div className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-              <p className="text-white/60 text-sm mb-2">Client Satisfaction</p>
-              <p className="text-3xl font-display font-bold text-white">98%</p>
+              <p className="text-white/60 text-sm mb-2">Focus</p>
+              <p className="text-3xl font-display font-bold text-white">100%</p>
+              <p className="text-white/50 text-sm mt-1">Australian made</p>
             </div>
           </motion.div>
         </div>
