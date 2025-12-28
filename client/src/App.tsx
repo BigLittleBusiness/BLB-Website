@@ -7,12 +7,18 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
+import GrantMaestro from "./pages/GrantMaestro";
+import WellnessApp from "./pages/WellnessApp";
+import GrantThrive from "./pages/GrantThrive";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/products/grantmaestro"} component={GrantMaestro} />
+      <Route path={"/products/wellnessapp"} component={WellnessApp} />
+      <Route path={"/products/grantthrive"} component={GrantThrive} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -5,8 +5,9 @@
  */
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, FileCheck, Heart, Users, Clock, DollarSign, Target, Bell, FolderSearch, Users2, Sparkles, HandHeart } from "lucide-react";
+import { ArrowUpRight, ArrowRight, FileCheck, Heart, Users, Clock, DollarSign, Target, Bell, FolderSearch, Users2, Sparkles, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 const products = [
   {
@@ -22,6 +23,7 @@ const products = [
       { icon: FolderSearch, text: "Find any grant file or email in seconds" },
     ],
     url: "https://www.grantmaestro.com",
+    internalUrl: "/products/grantmaestro",
     image: "/images/grant-maestro-dashboard.png",
     icon: FileCheck,
     accent: "from-[#0A2540] to-[#1E3A5F]",
@@ -40,6 +42,7 @@ const products = [
       { icon: Sparkles, text: "Empower proactive wellbeing management" },
     ],
     url: "https://www.wellnessapp.com.au",
+    internalUrl: "/products/wellnessapp",
     image: "/images/wellness-app-dashboard.png",
     icon: Heart,
     accent: "from-[#0D7377] to-[#14919B]",
@@ -58,6 +61,7 @@ const products = [
       { icon: HandHeart, text: "Simple, transparent process for applicants" },
     ],
     url: "https://www.grantthrive.com",
+    internalUrl: "/products/grantthrive",
     image: "/images/grant-thrive-dashboard.png",
     icon: Users,
     accent: "from-[#2D6A4F] to-[#40916C]",
@@ -155,32 +159,45 @@ export default function ProductsSection() {
                   ))}
                 </ul>
 
-                <Button
-                  className={`bg-gradient-to-r ${product.accent} text-white font-semibold group`}
-                  asChild
-                >
-                  <a href={product.url} target="_blank" rel="noopener noreferrer">
-                    Visit {product.name}
-                    <ArrowUpRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                  </a>
-                </Button>
+                <div className="flex flex-wrap gap-3">
+                  <Link href={product.internalUrl}>
+                    <Button
+                      className={`bg-gradient-to-r ${product.accent} text-white font-semibold group`}
+                    >
+                      Learn More
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="border-gray-300 text-[#333333] hover:bg-gray-50 group"
+                    asChild
+                  >
+                    <a href={product.url} target="_blank" rel="noopener noreferrer">
+                      Visit {product.name}
+                      <ArrowUpRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </a>
+                  </Button>
+                </div>
               </div>
 
               {/* Image */}
               <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                <div className="relative">
-                  {/* Decorative gradient background */}
-                  <div
-                    className={`absolute -inset-4 rounded-3xl bg-gradient-to-br ${product.accent} opacity-10 blur-2xl`}
-                  />
-                  <div className="relative floating-card rounded-2xl overflow-hidden bg-white border border-gray-100">
-                    <img
-                      src={product.image}
-                      alt={`${product.name} Dashboard`}
-                      className="w-full h-auto"
+                <Link href={product.internalUrl}>
+                  <div className="relative cursor-pointer group">
+                    {/* Decorative gradient background */}
+                    <div
+                      className={`absolute -inset-4 rounded-3xl bg-gradient-to-br ${product.accent} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`}
                     />
+                    <div className="relative floating-card rounded-2xl overflow-hidden bg-white border border-gray-100 group-hover:border-gray-200 transition-colors">
+                      <img
+                        src={product.image}
+                        alt={`${product.name} Dashboard`}
+                        className="w-full h-auto"
+                      />
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
             </motion.div>
           ))}

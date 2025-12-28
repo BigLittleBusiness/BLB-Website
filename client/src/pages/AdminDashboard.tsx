@@ -32,20 +32,31 @@ import {
   RefreshCw, 
   Trash2, 
   Mail, 
-  Building2, 
-  Package, 
   MessageSquare,
-  Calendar,
   Loader2,
   Users,
   CheckCircle,
   Clock,
-  XCircle
+  XCircle,
+  Download,
+  LogOut
 } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 
 type SubmissionStatus = "new" | "contacted" | "converted" | "closed";
+
+interface Submission {
+  id: number;
+  name: string;
+  email: string;
+  organisation: string | null;
+  product: string | null;
+  message: string | null;
+  status: string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
 
 const statusConfig: Record<SubmissionStatus, { label: string; color: string; icon: React.ReactNode }> = {
   new: { label: "New", color: "bg-blue-500/10 text-blue-500 border-blue-500/20", icon: <Clock className="w-3 h-3" /> },
@@ -55,7 +66,7 @@ const statusConfig: Record<SubmissionStatus, { label: string; color: string; ico
 };
 
 export default function AdminDashboard() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, logout } = useAuth();
   const [selectedSubmission, setSelectedSubmission] = useState<number | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [submissionToDelete, setSubmissionToDelete] = useState<number | null>(null);
@@ -114,6 +125,53 @@ export default function AdminDashboard() {
     });
   };
 
+  const formatDateForCSV = (date: Date | string) => {
+    return new Date(date).toISOString();
+  };
+
+  const exportToCSV = () => {
+    if (!submissions || submissions.length === 0) {
+      toast.error("No submissions to export");
+      return;
+    }
+
+    // Define CSV headers
+    const headers = ["ID", "Name", "Email", "Organisation", "Product", "Message", "Status", "Created At", "Updated At"];
+    
+    // Convert submissions to CSV rows
+    const rows = submissions.map((s: Submission) => [
+      s.id,
+      `"${(s.name || "").replace(/"/g, '""')}"`,
+      `"${(s.email || "").replace(/"/g, '""')}"`,
+      `"${(s.organisation || "").replace(/"/g, '""')}"`,
+      `"${(s.product || "").replace(/"/g, '""')}"`,
+      `"${(s.message || "").replace(/"/g, '""')}"`,
+      s.status,
+      formatDateForCSV(s.createdAt),
+      formatDateForCSV(s.updatedAt),
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `demo-submissions-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success(`Exported ${submissions.length} submissions to CSV`);
+  };
+
   // Show loading state while checking auth
   if (authLoading) {
     return (
@@ -153,9 +211,9 @@ export default function AdminDashboard() {
   // Calculate stats
   const stats = {
     total: submissions?.length || 0,
-    new: submissions?.filter(s => s.status === "new").length || 0,
-    contacted: submissions?.filter(s => s.status === "contacted").length || 0,
-    converted: submissions?.filter(s => s.status === "converted").length || 0,
+    new: submissions?.filter((s: Submission) => s.status === "new").length || 0,
+    contacted: submissions?.filter((s: Submission) => s.status === "contacted").length || 0,
+    converted: submissions?.filter((s: Submission) => s.status === "converted").length || 0,
   };
 
   return (
@@ -181,6 +239,15 @@ export default function AdminDashboard() {
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
             </Button>
           </div>
         </div>
@@ -246,9 +313,21 @@ export default function AdminDashboard() {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
         >
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="font-display text-xl font-bold text-[#0D0D0D]">Demo Requests</h2>
-            <p className="text-sm text-[#666666] mt-1">Manage and track all demo request submissions</p>
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h2 className="font-display text-xl font-bold text-[#0D0D0D]">Demo Requests</h2>
+              <p className="text-sm text-[#666666] mt-1">Manage and track all demo request submissions</p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exportToCSV}
+              disabled={!submissions || submissions.length === 0}
+              className="border-gray-200 text-[#333333] hover:bg-gray-50"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Export CSV
+            </Button>
           </div>
 
           {isLoading ? (
@@ -271,7 +350,7 @@ export default function AdminDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {submissions.map((submission) => (
+                  {submissions.map((submission: Submission) => (
                     <TableRow 
                       key={submission.id}
                       className={`hover:bg-[#F8F8F8]/50 cursor-pointer ${selectedSubmission === submission.id ? 'bg-gold/5' : ''}`}
@@ -341,7 +420,7 @@ export default function AdminDashboard() {
               </Table>
 
               {/* Expanded Details */}
-              {selectedSubmission && submissions.find(s => s.id === selectedSubmission)?.message && (
+              {selectedSubmission && submissions.find((s: Submission) => s.id === selectedSubmission)?.message && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
@@ -353,7 +432,7 @@ export default function AdminDashboard() {
                     <div>
                       <p className="text-sm font-medium text-[#0D0D0D] mb-1">Message</p>
                       <p className="text-[#666666]">
-                        {submissions.find(s => s.id === selectedSubmission)?.message}
+                        {submissions.find((s: Submission) => s.id === selectedSubmission)?.message}
                       </p>
                     </div>
                   </div>
