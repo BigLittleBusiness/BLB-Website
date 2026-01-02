@@ -10,6 +10,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import GrantMaestro from "./pages/GrantMaestro";
 import WellnessApp from "./pages/WellnessApp";
 import GrantThrive from "./pages/GrantThrive";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 function Router() {
   return (
@@ -19,6 +21,8 @@ function Router() {
       <Route path={"/products/grantmaestro"} component={GrantMaestro} />
       <Route path={"/products/wellnessapp"} component={WellnessApp} />
       <Route path={"/products/grantthrive"} component={GrantThrive} />
+      <Route path={"/privacy"} component={PrivacyPolicy} />
+      <Route path={"/terms"} component={TermsOfService} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

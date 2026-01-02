@@ -37,3 +37,10 @@
 - [x] Replace placeholder logo with official BLB logo in Header
 - [x] Replace placeholder logo with official BLB logo in Footer
 - [x] Update any other pages using the placeholder logo
+- [x] Research AU/NZ privacy and consumer law requirements
+- [x] Draft Privacy Policy page compliant with Australian Privacy Act and NZ Privacy Act
+- [x] Draft Terms of Service page compliant with Australian Consumer Law
+- [x] Create Privacy Policy page component
+- [x] Create Terms of Service page component
+- [x] Update Footer links to new pages
+- [x] Add routes for new pages

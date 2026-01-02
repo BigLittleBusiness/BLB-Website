@@ -15,8 +15,8 @@ const productLinks = [
 const companyLinks = [
   { name: "About Us", url: "#about" },
   { name: "Contact", url: "#contact" },
-  { name: "Privacy Policy", url: "#" },
-  { name: "Terms of Service", url: "#" },
+  { name: "Privacy Policy", url: "/privacy" },
+  { name: "Terms of Service", url: "/terms" },
 ];
 
 export default function Footer() {
