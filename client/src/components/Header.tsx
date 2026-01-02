@@ -38,17 +38,12 @@ export default function Header() {
       <div className="container">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gold flex items-center justify-center">
-              <span className="font-display font-bold text-lg text-[#0D0D0D]">BL</span>
-            </div>
-            <span
-              className={`font-display font-semibold text-xl tracking-tight transition-colors ${
-                isScrolled ? "text-[#0D0D0D]" : "text-white"
-              }`}
-            >
-              Big Little Business
-            </span>
+          <a href="/" className="flex items-center">
+            <img 
+              src="/images/blb-logo.png" 
+              alt="Big Little Business" 
+              className="h-12 w-auto"
+            />
           </a>
 
           {/* Desktop Navigation */}

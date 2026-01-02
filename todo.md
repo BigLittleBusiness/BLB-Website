@@ -34,3 +34,6 @@
 - [x] Implement CSV export feature for demo submissions
 - [x] Add export button to admin dashboard
 - [x] Test all new features and fix bugs
+- [x] Replace placeholder logo with official BLB logo in Header
+- [x] Replace placeholder logo with official BLB logo in Footer
+- [x] Update any other pages using the placeholder logo

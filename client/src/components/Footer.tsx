@@ -28,13 +28,12 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-white/10">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gold flex items-center justify-center">
-                <span className="font-display font-bold text-lg text-[#0D0D0D]">BL</span>
-              </div>
-              <span className="font-display font-semibold text-xl text-white tracking-tight">
-                Big Little Business
-              </span>
+            <div className="mb-6">
+              <img 
+                src="/images/blb-logo.png" 
+                alt="Big Little Business" 
+                className="h-12 w-auto"
+              />
             </div>
             <p className="text-white/60 max-w-sm leading-relaxed mb-6">
               Empowering local governments and HR teams across Australia and 
